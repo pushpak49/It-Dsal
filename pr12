@@ -1,0 +1,157 @@
+Department maintains student’s database. The file contains roll number, name, division and address.
+Write a program to create a sequential file to store and maintain student data, allow add, search and
+display data operations.
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+// Define a structure for Student data
+struct Student {
+    int roll_no;
+    string name;
+    string division;
+    string address;
+};
+
+// Function to add a student record to the file
+void addStudent(const string &filename) {
+    ofstream outFile;
+    outFile.open(filename, ios::app); // Open the file in append mode
+
+    if (!outFile) {
+        cout << "File could not be opened!" << endl;
+        return;
+    }
+
+    Student s;
+    cout << "Enter Roll Number: ";
+    cin >> s.roll_no;
+    cin.ignore();  // To ignore the newline character left by cin
+    cout << "Enter Name: ";
+    getline(cin, s.name);
+    cout << "Enter Division: ";
+    getline(cin, s.division);
+    cout << "Enter Address: ";
+    getline(cin, s.address);
+
+    // Write the student's data to the file
+    outFile << s.roll_no << endl;
+    outFile << s.name << endl;
+    outFile << s.division << endl;
+    outFile << s.address << endl;
+
+    cout << "Student data added successfully!" << endl;
+
+    outFile.close();
+}
+
+// Function to search a student by roll number
+void searchStudent(const string &filename) {
+    ifstream inFile;
+    inFile.open(filename);
+
+    if (!inFile) {
+        cout << "File could not be opened!" << endl;
+        return;
+    }
+
+    int roll_no;
+    cout << "Enter Roll Number to search: ";
+    cin >> roll_no;
+
+    Student s;
+    bool found = false;
+
+    // Read each student's record from the file and search by roll number
+    while (inFile >> s.roll_no) {
+        inFile.ignore();  // To ignore the newline character after the roll number
+        getline(inFile, s.name);
+        getline(inFile, s.division);
+        getline(inFile, s.address);
+
+        if (s.roll_no == roll_no) {
+            cout << "Student Found!" << endl;
+            cout << "Roll No: " << s.roll_no << endl;
+            cout << "Name: " << s.name << endl;
+            cout << "Division: " << s.division << endl;
+            cout << "Address: " << s.address << endl;
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Student with Roll Number " << roll_no << " not found." << endl;
+    }
+
+    inFile.close();
+}
+
+// Function to display all student records
+void displayAllStudents(const string &filename) {
+    ifstream inFile;
+    inFile.open(filename);
+
+    if (!inFile) {
+        cout << "File could not be opened!" << endl;
+        return;
+    }
+
+    Student s;
+    cout << "All Students Data:" << endl;
+
+    // Read and display all student records from the file
+    while (inFile >> s.roll_no) {
+        inFile.ignore();  // To ignore the newline character after the roll number
+        getline(inFile, s.name);
+        getline(inFile, s.division);
+        getline(inFile, s.address);
+
+        cout << "Roll No: " << s.roll_no << endl;
+        cout << "Name: " << s.name << endl;
+        cout << "Division: " << s.division << endl;
+        cout << "Address: " << s.address << endl;
+        cout << "-------------------------------" << endl;
+    }
+
+    inFile.close();
+}
+
+int main() {
+    string filename = "students.txt"; // File to store student data
+    int choice;
+
+    while (true) {
+        // Display menu for user interaction
+        cout << "\nStudent Database Menu:" << endl;
+        cout << "1. Add Student" << endl;
+        cout << "2. Search Student by Roll Number" << endl;
+        cout << "3. Display All Students" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addStudent(filename);
+                break;
+            case 2:
+                searchStudent(filename);
+                break;
+            case 3:
+                displayAllStudents(filename);
+                break;
+            case 4:
+                cout << "Exiting program..." << endl;
+                return 0;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+        }
+    }
+
+    return 0;
+}
+1
