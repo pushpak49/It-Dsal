@@ -1,0 +1,108 @@
+Implement Circular Queue using Circular Linked List. Perform following operations on it. a) Insertion
+(Enqueue) b) Deletion (Dequeue) c) Display
+
+#include <iostream>
+using namespace std;
+
+// Node structure for Circular Linked List
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Circular Queue class
+class CircularQueue {
+private:
+    Node* front;
+    Node* rear;
+
+public:
+    // Constructor to initialize an empty queue
+    CircularQueue() {
+        front = nullptr;
+        rear = nullptr;
+    }
+
+    // Enqueue (Insertion) operation
+    void enqueue(int value) {
+        Node* newNode = new Node();
+        newNode->data = value;
+        newNode->next = nullptr;
+
+        // If queue is empty, set both front and rear to the new node
+        if (front == nullptr) {
+            front = newNode;
+            rear = newNode;
+            newNode->next = front; // Circular link (points to front)
+        } else {
+            rear->next = newNode;  // Rear points to the new node
+            rear = newNode;        // Move rear to the new node
+            rear->next = front;    // Circular link (points to front)
+        }
+
+        cout << value << " enqueued to the queue." << endl;
+    }
+
+    // Dequeue (Deletion) operation
+    void dequeue() {
+        if (front == nullptr) {
+            cout << "Queue is empty, cannot dequeue!" << endl;
+            return;
+        }
+
+        // If there is only one element in the queue
+        if (front == rear) {
+            delete front;
+            front = rear = nullptr;
+            cout << "Dequeued from the queue." << endl;
+        } else {
+            Node* temp = front;
+            front = front->next; // Move front to the next node
+            rear->next = front;  // Adjust the rear's next pointer
+            delete temp;
+            cout << "Dequeued from the queue." << endl;
+        }
+    }
+
+    // Display the elements of the queue
+    void display() {
+        if (front == nullptr) {
+            cout << "Queue is empty!" << endl;
+            return;
+        }
+
+        Node* temp = front;
+        cout << "Queue elements: ";
+        while (temp != rear) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << rear->data << endl;  // Print the last element (rear)
+    }
+
+    // Destructor to free memory
+    ~CircularQueue() {
+        while (front != nullptr) {
+            dequeue();  // Dequeue all elements to free memory
+        }
+    }
+};
+
+int main() {
+    CircularQueue q;
+
+    // Perform operations on Circular Queue
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.enqueue(40);
+
+    q.display();  // Display queue
+
+    q.dequeue();  // Remove an element
+    q.dequeue();  // Remove another element
+
+    q.display();  // Display queue after deletions
+
+    return 0;
+}
