@@ -1,0 +1,127 @@
+Construct an Expression Tree from postfix and prefix expression. Perform recursive In-order, pre-order
+and post-order traversals.
+
+#include <iostream>
+#include <stack>
+#include <string>
+#include <cctype>
+using namespace std;
+
+// Node structure for the Expression Tree
+struct Node {
+    char data;
+    Node* left;
+    Node* right;
+
+    // Constructor to initialize a node
+    Node(char val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+// Function to check if the character is an operand (i.e., a letter or number)
+bool isOperand(char c) {
+    return isalpha(c) || isdigit(c);
+}
+
+// Function to construct an expression tree from a postfix expression
+Node* constructPostfixTree(const string& postfix) {
+    stack<Node*> s;
+    
+    for (char c : postfix) {
+        if (isOperand(c)) {
+            s.push(new Node(c));  // Create a node for the operand and push it onto the stack
+        } else {
+            Node* right = s.top(); s.pop();  // Pop the right operand
+            Node* left = s.top(); s.pop();   // Pop the left operand
+            Node* root = new Node(c);        // Create a node for the operator
+            root->left = left;               // Set left operand
+            root->right = right;             // Set right operand
+            s.push(root);                    // Push the root back onto the stack
+        }
+    }
+    return s.top();  // The root of the tree will be the only element left in the stack
+}
+
+// Function to construct an expression tree from a prefix expression
+Node* constructPrefixTree(const string& prefix) {
+    stack<Node*> s;
+    
+    for (int i = prefix.size() - 1; i >= 0; --i) {
+        char c = prefix[i];
+        if (isOperand(c)) {
+            s.push(new Node(c));  // Create a node for the operand and push it onto the stack
+        } else {
+            Node* left = s.top(); s.pop();  // Pop the left operand
+            Node* right = s.top(); s.pop(); // Pop the right operand
+            Node* root = new Node(c);       // Create a node for the operator
+            root->left = left;              // Set left operand
+            root->right = right;            // Set right operand
+            s.push(root);                   // Push the root back onto the stack
+        }
+    }
+    return s.top();  // The root of the tree will be the only element left in the stack
+}
+
+// In-order Traversal (Left, Root, Right)
+void inorderTraversal(Node* root) {
+    if (root == nullptr) return;
+    inorderTraversal(root->left);
+    cout << root->data << " ";
+    inorderTraversal(root->right);
+}
+
+// Pre-order Traversal (Root, Left, Right)
+void preorderTraversal(Node* root) {
+    if (root == nullptr) return;
+    cout << root->data << " ";
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
+}
+
+// Post-order Traversal (Left, Right, Root)
+void postorderTraversal(Node* root) {
+    if (root == nullptr) return;
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
+    cout << root->data << " ";
+}
+
+int main() {
+    string postfix, prefix;
+    
+    // Input postfix and prefix expressions
+    cout << "Enter postfix expression: ";
+    cin >> postfix;
+    cout << "Enter prefix expression: ";
+    cin >> prefix;
+
+    // Construct expression trees from postfix and prefix expressions
+    Node* postfixTree = constructPostfixTree(postfix);
+    Node* prefixTree = constructPrefixTree(prefix);
+
+    // Perform and print in-order, pre-order, and post-order traversals on the trees
+    cout << "In-order traversal (Postfix Tree): ";
+    inorderTraversal(postfixTree);
+    cout << endl;
+
+    cout << "Pre-order traversal (Postfix Tree): ";
+    preorderTraversal(postfixTree);
+    cout << endl;
+
+    cout << "Post-order traversal (Postfix Tree): ";
+    postorderTraversal(postfixTree);
+    cout << endl;
+
+    cout << "In-order traversal (Prefix Tree): ";
+    inorderTraversal(prefixTree);
+    cout << endl;
+
+    cout << "Pre-order traversal (Prefix Tree): ";
+    preorderTraversal(prefixTree);
+    cout << endl;
+
+    cout << "Post-order traversal (Prefix Tree): ";
+    postorderTraversal(prefixTree);
+    cout << endl;
+
+    return 0;
+}
