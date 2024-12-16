@@ -1,0 +1,111 @@
+//Implement stack as an abstract data type using singly linked list and use this ADT for evaluation of
+//postfix expression.
+
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <stack>
+#include <cmath> // for mathematical operations (like pow)
+
+using namespace std;
+
+// Node structure for the singly linked list (Stack implementation)
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Stack class using singly linked list
+class Stack {
+public:
+    Node* top;
+
+    // Constructor to initialize the top pointer
+    Stack() : top(nullptr) {}
+
+    // Push function to add element to the stack
+    void push(int value) {
+        Node* newNode = new Node();
+        newNode->data = value;
+        newNode->next = top;
+        top = newNode;
+    }
+
+    // Pop function to remove element from the stack
+    int pop() {
+        if (isEmpty()) {
+            cout << "Stack underflow!" << endl;
+            return -1;
+        }
+        Node* temp = top;
+        int poppedValue = top->data;
+        top = top->next;
+        delete temp;
+        return poppedValue;
+    }
+
+    // Peek function to get the top element of the stack
+    int peek() {
+        if (isEmpty()) {
+            return -1;
+        }
+        return top->data;
+    }
+
+    // Check if the stack is empty
+    bool isEmpty() {
+        return top == nullptr;
+    }
+
+    // Destructor to clean up the memory
+    ~Stack() {
+        while (top) {
+            pop();
+        }
+    }
+};
+
+// Function to evaluate the postfix expression using the stack
+int evaluatePostfix(const string& postfix) {
+    Stack stack;
+
+    for (char c : postfix) {
+        // If the character is a digit, push it to the stack
+        if (isdigit(c)) {
+            stack.push(c - '0');  // Convert char to int
+        }
+        // If the character is an operator, pop two operands and apply the operator
+        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^') {
+            int operand2 = stack.pop();
+            int operand1 = stack.pop();
+
+            switch (c) {
+                case '+': stack.push(operand1 + operand2); break;
+                case '-': stack.push(operand1 - operand2); break;
+                case '*': stack.push(operand1 * operand2); break;
+                case '/': stack.push(operand1 / operand2); break;
+                case '^': stack.push(pow(operand1, operand2)); break;
+                default: cout << "Unknown operator!" << endl;
+            }
+        }
+    }
+
+    // The result will be the only element remaining in the stack
+    return stack.pop();
+}
+
+int main() {
+    string postfix;
+
+    // Input postfix expression
+    cout << "Enter a postfix expression: ";
+    cin >> postfix;
+
+    // Evaluate the postfix expression
+    int result = evaluatePostfix(postfix);
+
+    // Output the result
+    cout << "Result: " << result << endl;
+
+    return 0;
+}
