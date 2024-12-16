@@ -1,0 +1,59 @@
+//Consider a student database of SEIT class. Database contains different fields of every student like Roll
+//No, Name and SGPA. Arrange list of students according to name. (Use Insertion sort)
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+
+    // Input the number of students
+    cout << "Enter the number of students: ";
+    cin >> n;
+
+    // Create arrays to store Roll No, Name, and SGPA
+    int rollNo[n];
+    string name[n];
+    float sgpa[n];
+
+    // Input details for each student
+    for (int i = 0; i < n; i++) {
+        cout << "Enter Roll No, Name, SGPA for student " << (i + 1) << ":" << endl;
+        cout << "Roll No: ";
+        cin >> rollNo[i];
+        cin.ignore();  // To ignore the newline character after entering roll number
+        cout << "Name: ";
+        getline(cin, name[i]);
+        cout << "SGPA: ";
+        cin >> sgpa[i];
+    }
+
+    // Insertion Sort to sort students by Name
+    for (int i = 1; i < n; i++) {
+        string keyName = name[i];
+        int keyRollNo = rollNo[i];
+        float keySGPA = sgpa[i];
+        
+        int j = i - 1;
+        // Shift elements of name[] that are greater than keyName to one position ahead
+        while (j >= 0 && name[j] > keyName) {
+            name[j + 1] = name[j];
+            rollNo[j + 1] = rollNo[j];
+            sgpa[j + 1] = sgpa[j];
+            j = j - 1;
+        }
+        // Place the key element at its correct position
+        name[j + 1] = keyName;
+        rollNo[j + 1] = keyRollNo;
+        sgpa[j + 1] = keySGPA;
+    }
+
+    // Output the sorted list of students by Name
+    cout << "\nSorted List of Students (by Name):\n";
+    for (int i = 0; i < n; i++) {
+        cout << "Roll No: " << rollNo[i] << ", Name: " << name[i] << ", SGPA: " << sgpa[i] << endl;
+    }
+
+    return 0;
+}
