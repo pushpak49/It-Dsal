@@ -73,9 +73,4 @@ int main()
  search(root);
  cout << "\n The maxDepth of tree is:- "<<maxDepth(root)<<endl;
 }
-avcoe@avcoe-Vostro-3710:~$ g++ binarytreee.cpp
-avcoe@avcoe-Vostro-3710:~$ ./a.out
-Searched node:
-Enter the elements to be searched:78
-Data not found
-The maxDepth of tree is:3
+
