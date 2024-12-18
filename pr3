@@ -1,35 +1,101 @@
 #include <iostream>
-
-#include<stdlib.h>
+ #include <vector>
+#include <algorithm>
 using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float sgpa;
+};
+
+// Function to perform a non-recursive Binary Search to find a student by name
+int binarySearchByName(vector<Student>& students, int n, const string& targetName) {
+    int left = 0, right = n - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        // Compare the target name with the mid element's name
+        if (students[mid].name == targetName) {
+            return mid;  // Student found
+        }
+        else if (students[mid].name < targetName) {
+            left = mid + 1;  // Move right
+        }
+        else {
+            right = mid - 1;  // Move left
+        }
+    }
+    return -1;  // Student not found
+}
+
+// Function to search students based on SGPA
+void searchBySGPA(vector<Student>& students, float targetSGPA) {
+    bool found = false;
+    for (int i = 0; i < students.size(); i++) {
+        if (students[i].sgpa == targetSGPA) {
+            cout << "Student found with SGPA " << targetSGPA << ": "
+                 << "Roll No: " << students[i].rollNo
+                 << ", Name: " << students[i].name
+                 << ", SGPA: " << students[i].sgpa << endl;
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No student found with SGPA " << targetSGPA << endl;
+    }
+}
+
 int main() {
-  int i, n,number,lower=0,higher,middle,flag=0,a[3];
-  cout<<"Enter total number in array=";
-  cin>>n;
-  cout<<"Enter the number in assending order=\n";
-  for(i=0;i<n;i++)
-  cin>>a[i];
-  cout<<"Enter the number to be search=";
-  cin>>number;
-  higher=n-1;
-  while(lower<=higher)
-  {
-      middle=(lower+higher)/2;
-      if(number==a[middle])
-      {
-      flag=1;
-      break;
-      }
-      if(number<a[middle])
-       higher=middle-1;
-       else
-       lower=middle+1;
-  }
-  if(flag==1)
-  {
-      cout<<"**number is found**";
-      
-  }
-  else
-  cout<<"**number is not found;**";
+    int n;
+
+    // Input the number of students
+    cout << "Enter the number of students: ";
+    cin >> n;
+
+    // Create a vector of students
+    vector<Student> students(n);
+
+    // Input details for each student
+    for (int i = 0; i < n; i++) {
+        cout << "Enter Roll No, Name, and SGPA for student " << (i + 1) << ":" << endl;
+        cout << "Roll No: ";
+        cin >> students[i].rollNo;
+        cin.ignore();  // To clear the newline character after entering roll number
+        cout << "Name: ";
+        getline(cin, students[i].name);
+        cout << "SGPA: ";
+        cin >> students[i].sgpa;
+    }
+
+    // Searching by SGPA
+    float targetSGPA;
+    cout << "\nEnter the SGPA to search for: ";
+    cin >> targetSGPA;
+    searchBySGPA(students, targetSGPA);
+
+    // Sorting the list of students by name for binary search
+    sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
+        return a.name < b.name;
+    });
+
+    // Searching by Name using Binary Search
+    string targetName;
+    cout << "\nEnter the name to search for: ";
+    cin.ignore();  // To clear any lingering newline from previous input
+    getline(cin, targetName);
+
+    int result = binarySearchByName(students, n, targetName);
+
+    if (result != -1) {
+        cout << "\nStudent found: "
+             << "Roll No: " << students[result].rollNo
+             << ", Name: " << students[result].name
+             << ", SGPA: " << students[result].sgpa << endl;
+    } else {
+        cout << "\nStudent with name " << targetName << " not found." << endl;
+    }
+
+    return 0;
 }
