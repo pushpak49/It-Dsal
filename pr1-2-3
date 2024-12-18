@@ -1,0 +1,111 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+struct student
+{
+    int rollno;
+    char name[20];
+    double SGPA;
+};
+void accept(student list[], int n) 
+{
+    for (int i = 0; i < n; i++) 
+    {
+        cout << "Enter Roll No, Name, and SGPA for student";
+        cin >> list[i].rollno >> list[i].name >> list[i].SGPA;
+    }
+}
+void display(student list[], int n)
+{
+    cout << "\nRoll No\tName\t\tSGPA\n";
+    for (int i = 0; i < n; i++) 
+    {
+        cout << list[i].rollno << "\t" << list[i].name << "\t\t" << list[i].SGPA ;
+    }
+}
+void bubblesort(student list[], int n) 
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            if (list[j].rollno > list[j + 1].rollno)
+            {
+                swap(list[j], list[j + 1]);
+            }
+        }
+    }
+}
+
+void insertionsort(student list[], int n)
+{
+    for (int i = 1; i < n; i++)
+    {
+        student temp = list[i];
+        int j = i - 1;
+        while (j >=0 && strcmp(list[j].name, temp.name) > 0) {
+            list[j + 1] = list[j];
+            j--;
+        }
+        list[j + 1] = temp;
+    }
+}
+int binarysearch(student list[], int n, char name[20])
+{
+    int low = 0, high = n - 1;
+    while (low <= high)
+    {
+        int mid = (low + high) / 2;
+        int cmp = strcmp(list[mid].name, name);
+        if (cmp == 0) 
+            return mid;
+        else if (cmp < 0) 
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+int main() 
+{
+    student data[20];
+    int n = 3, ch;
+    accept(data, n);
+    do {
+        cout << "\n1. Bubble Sort (by Roll No)";
+        cout << "\n2. Insertion Sort (by Name)";
+        cout << "\n3. Binary Search (by Name)";
+        cout << "\nEnter your choice: ";
+        cin >> ch;
+
+        switch (ch) 
+        {
+            case 1:
+                bubblesort(data, n);
+                display(data, n);
+                break;
+
+            case 2:
+                insertionsort(data, n);
+                display(data, n);
+                break;
+
+            case 3: 
+            {
+                char name[20];
+                cout << "\nEnter Name to search: ";
+                cin >> name;
+                insertionsort(data, n);
+                int result = binarysearch(data, n, name);
+                if (result != -1) 
+                {
+                    cout << "\nStudent Found:\n";
+                    cout << "Roll No: " << data[result].rollno
+                         << ", Name: " << data[result].name
+                         << ", SGPA: " << data[result].SGPA;
+                } 
+            }
+        }
+    } while (true);
+
+}
